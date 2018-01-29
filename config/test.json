@@ -1,0 +1,3 @@
+{
+  "dbUrl": "mongodb://localhost/expressjwt-test"
+}

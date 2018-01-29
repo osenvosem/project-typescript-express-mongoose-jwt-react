@@ -1,0 +1,15 @@
+{
+  "presets": [
+    "@babel/typescript",
+    [
+      "@babel/env",
+      {
+        "targets": {
+          "node": "current"
+        }
+      }
+    ],
+    "@babel/react"
+  ],
+  "sourceMaps": true
+}
