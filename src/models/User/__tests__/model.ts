@@ -8,7 +8,7 @@ const randomBytes = util.promisify(crypto.randomBytes);
 const pbkdf2 = util.promisify(crypto.pbkdf2);
 
 beforeAll(() => {
-  return mongoose.connect(config.get("dbUrl"));
+  return mongoose.connect("mongodb://localhost/userModelTest");
 });
 
 afterAll(async () => {
