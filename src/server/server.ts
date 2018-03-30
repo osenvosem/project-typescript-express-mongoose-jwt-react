@@ -1,14 +1,22 @@
 import path from "path";
-import express from "express";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import serveFavicon from "serve-favicon";
 import config from "config";
+import express, { ErrorRequestHandler } from "express";
 
 import configureLibs from "./libConfig";
-import APIv1 from "./routes";
+import { usersApi } from "./routes";
 
 const app = express();
+
+app.set("x-powered-by", false);
+
+if (process.env.NODE_ENV === "production") {
+  app.use("/assets/", express.static("public"));
+}
+
+app.use(express.json());
 
 app.use(serveFavicon(path.resolve("./public/favicon.ico")));
 app.use("/assets", express.static("public"));
@@ -17,6 +25,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 configureLibs(app);
 
-app.use("/api/v1", APIv1);
+app.use("/api/", usersApi);
+// app.use("*", SSR);
+
+const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+  res.status(err.statusCode || 500).send(err.message);
+};
+app.use(errorHandler);
 
 export default app;

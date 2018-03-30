@@ -1,15 +1,22 @@
 {
   "presets": [
-    "@babel/typescript",
+    "@babel/preset-typescript",
     [
-      "@babel/env",
+      "@babel/preset-env",
       {
         "targets": {
-          "node": "current"
+          "browsers": ["last 2 versions"]
         }
       }
     ],
-    "@babel/react"
+    "@babel/preset-stage-2",
+    "@babel/preset-react"
   ],
-  "sourceMaps": true
+  "plugins": ["@babel/plugin-proposal-decorators"],
+  "env": {
+    "development": {
+      "presets": ["@babel/preset-env"],
+      "plugins": ["react-hot-loader/babel"]
+    }
+  }
 }

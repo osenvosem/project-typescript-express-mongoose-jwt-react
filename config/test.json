@@ -1,4 +1,0 @@
-{
-  "dbUrl": "mongodb://localhost/expressjwt-test",
-  "port": 3001
-}

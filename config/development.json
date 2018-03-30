@@ -1,3 +1,5 @@
 {
+  "serverPort": 3001,
+  "wdsPort": 3000,
   "dbUrl": "mongodb://localhost/expressjwt"
 }

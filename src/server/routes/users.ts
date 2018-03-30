@@ -1,12 +1,13 @@
 import { Router } from "express";
 import passport from "passport";
 import _ from "lodash";
-import jwt from "jsonwebtoken";
+import jwt, { SignOptions } from "jsonwebtoken";
 import config from "config";
 import mongoose from "mongoose";
 
 import User from "../models/User";
 import { IUserDocument } from "../models/User/interfaces";
+import { TRequestErrorWithStatusCode } from "./types";
 
 const router = Router();
 
@@ -20,7 +21,7 @@ const cookieOptions = {
   signed: true
 };
 
-const jwtOptions = { expiresIn: config.get("jwt.expiresIn") };
+const jwtOptions: SignOptions = { expiresIn: config.get("jwt.expiresIn") };
 
 router.get("/", jwtAuth, (req, res, next) => {
   User.find()
@@ -38,8 +39,11 @@ router.get("/", jwtAuth, (req, res, next) => {
 router.get("/:id", jwtAuth, (req, res, next) => {
   const { id } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(id))
-    return next(new Error("User id isn't valid."));
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    const err = new Error("User id is invalid.") as TRequestErrorWithStatusCode;
+    err.statusCode = 400;
+    return next(err);
+  }
 
   User.findById(id)
     .lean()
@@ -71,17 +75,34 @@ router.post("/registration", (req, res, next) => {
 router.post("/login", (req, res, next) => {
   const { body: { username, password } } = req;
 
-  if (!username || !password)
-    return next(new Error("You must provide username and password."));
+  if (!username || !password) {
+    const err = new Error(
+      "You must provide username and password."
+    ) as TRequestErrorWithStatusCode;
+    err.statusCode = 400;
+    return next(err);
+  }
 
   User.findOne({ username }, (err, rawUser) => {
     if (err) return next(err);
-    if (!rawUser) return next(new Error("Incorrect username or password."));
+    if (!rawUser) {
+      const err = new Error(
+        "Incorrect username or password."
+      ) as TRequestErrorWithStatusCode;
+      err.statusCode = 400;
+      return next(err);
+    }
 
     rawUser
       .checkPassword(password)
       .then(isCorrect => {
-        if (!isCorrect) return next(new Error("Password is incorrect"));
+        if (!isCorrect) {
+          const err = new Error(
+            "Password is incorrect"
+          ) as TRequestErrorWithStatusCode;
+          err.statusCode = 400;
+          return next(err);
+        }
 
         const user = _.pick(rawUser, User.publicFields);
 
