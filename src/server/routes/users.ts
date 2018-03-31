@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, RequestHandler } from "express";
 import passport from "passport";
 import _ from "lodash";
 import jwt, { SignOptions } from "jsonwebtoken";
@@ -6,12 +6,14 @@ import config from "config";
 import mongoose from "mongoose";
 
 import User from "../models/User";
-import { IUserDocument } from "../models/User/interfaces";
+import { TUserDocument } from "../models/User/types";
 import { TRequestErrorWithStatusCode } from "./types";
 
 const router = Router();
 
-const jwtAuth = passport.authenticate("jwt", { session: false });
+const jwtAuth: RequestHandler = passport.authenticate("jwt", {
+  session: false
+});
 
 const cookieOptions = {
   httpOnly: true,
@@ -27,7 +29,7 @@ router.get("/", jwtAuth, (req, res, next) => {
   User.find()
     .lean()
     .then(rawUsers => {
-      const filteredUsers = (rawUsers as IUserDocument[]).map(rawUser =>
+      const filteredUsers = (rawUsers as TUserDocument[]).map(rawUser =>
         _.pick(rawUser, User.publicFields)
       );
 
@@ -48,7 +50,7 @@ router.get("/:id", jwtAuth, (req, res, next) => {
   User.findById(id)
     .lean()
     .then(rawUser => {
-      const user = _.pick(rawUser as IUserDocument, User.publicFields);
+      const user = _.pick(rawUser as TUserDocument, User.publicFields);
       res.json(user);
     })
     .catch(next);

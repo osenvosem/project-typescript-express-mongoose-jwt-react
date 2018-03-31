@@ -1,7 +1,7 @@
-import mongoose from "mongoose";
+import mongoose, { HookSyncCallback } from "mongoose";
 import crypto from "crypto";
 import config from "config";
-import { IUserDocument, IUserModel } from "./interfaces";
+import { TUserDocument, TUserModel, TCheckPassword } from "./types";
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -56,7 +56,7 @@ userSchema.statics.publicFields = [
 
 const { length, iterations, algorithm } = config.get("crypto");
 
-userSchema.pre("save", function(next) {
+userSchema.pre<TUserDocument>("save", function(next) {
   crypto.randomBytes(length, (err, randB) => {
     if (err) return next(err);
 
@@ -77,10 +77,11 @@ userSchema.pre("save", function(next) {
   });
 });
 
-userSchema.methods.checkPassword = function(password) {
+userSchema.methods.checkPassword = function(password: string) {
   return new Promise((resolve, reject) => {
     password = password.trim();
-    if (!password) return false;
+    if (!password)
+      return reject(new Error("You must provide a password to check."));
 
     crypto.pbkdf2(
       password,
@@ -94,6 +95,6 @@ userSchema.methods.checkPassword = function(password) {
       }
     );
   });
-};
+} as TCheckPassword<TUserDocument>;
 
-export default mongoose.model<IUserDocument, IUserModel>("User", userSchema);
+export default mongoose.model<TUserDocument, TUserModel>("User", userSchema);

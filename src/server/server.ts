@@ -10,13 +10,11 @@ import { usersApi } from "./routes";
 
 const app = express();
 
-app.set("x-powered-by", false);
+app.disable("x-powered-by");
 
 if (process.env.NODE_ENV === "production") {
   app.use("/assets/", express.static("public"));
 }
-
-app.use(express.json());
 
 app.use(serveFavicon(path.resolve("./public/favicon.ico")));
 app.use("/assets", express.static("public"));

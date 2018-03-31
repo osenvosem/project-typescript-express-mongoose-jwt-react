@@ -3,9 +3,15 @@ import { Route, Redirect, Switch } from "react-router-dom";
 import { hot } from "react-hot-loader";
 import styled, { ThemeProvider } from "styled-components";
 
+import Users from "./screens/Users";
+
 class Root extends Component {
   render() {
-    return <div>Root component</div>;
+    return (
+      <Switch>
+        <Route exact path="/" component={Users} />
+      </Switch>
+    );
   }
 }
 
