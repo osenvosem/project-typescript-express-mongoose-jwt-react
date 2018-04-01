@@ -6,7 +6,7 @@ import config from "config";
 import express, { ErrorRequestHandler } from "express";
 
 import configureLibs from "./libConfig";
-import { usersApi } from "./routes";
+import { usersApi, ssr } from "./routes";
 
 const app = express();
 
@@ -24,7 +24,7 @@ app.use(express.urlencoded({ extended: false }));
 configureLibs(app);
 
 app.use("/api/", usersApi);
-// app.use("*", SSR);
+app.use("*", ssr);
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   res.status(err.statusCode || 500).send(err.message);

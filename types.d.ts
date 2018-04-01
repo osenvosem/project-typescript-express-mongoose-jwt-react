@@ -2,9 +2,15 @@ declare module "json-loader!*";
 declare module "*.css";
 declare module "*.json";
 
-// shared folder
+// shared folders
 declare module "components/*";
 declare module "services/*";
+
+interface window {
+  __INITIAL_STATE__: any;
+}
+
+declare const CLIENT_ASSETS: any;
 
 declare module "*.woff";
 declare module "*.woff2";

@@ -5,8 +5,8 @@ import jwt, { SignOptions } from "jsonwebtoken";
 import config from "config";
 import mongoose from "mongoose";
 
-import User from "../models/User";
-import { TUserDocument } from "../models/User/types";
+import User from "../../models/User";
+import { TUserDocument } from "../../models/User/types";
 import { TRequestErrorWithStatusCode } from "./types";
 
 const router = Router();

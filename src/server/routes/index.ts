@@ -1,2 +1,2 @@
 export { default as usersApi } from "./users";
-export { default as SSR } from "./SSR";
+export { default as ssr } from "./ssr";

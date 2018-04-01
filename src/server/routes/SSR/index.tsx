@@ -8,7 +8,7 @@ import { ServerStyleSheet } from "styled-components";
 
 import Root from "../../../common/Root";
 import { TStaticContext } from "./types";
-import configureStore from "../../../common/configureStore";
+// import configureStore from "../../../common/configureStore";
 
 const assets: string[] = JSON.parse(CLIENT_ASSETS).filter((asset: string) =>
   /.js$/.test(asset)
@@ -17,22 +17,21 @@ const assets: string[] = JSON.parse(CLIENT_ASSETS).filter((asset: string) =>
 const SSRHandler: Handler = (req, res, next) => {
   const context: TStaticContext = {};
   const modules: string[] = [];
-  const store = configureStore();
+  // const store = configureStore();
   const sheet = new ServerStyleSheet();
 
   const rootComp = (
-    <Provider store={store}>
-      <StaticRouter location={req.url} context={context}>
-        <Root />
-      </StaticRouter>
-    </Provider>
+    // <Provider store={store}>
+    <StaticRouter location={req.url} context={context}>
+      <Root />
+    </StaticRouter>
+    // </Provider>
   );
 
   if (context.url) {
     res.redirect(context.status || 301, context.url);
   } else {
-    store.runSaga(todoAppSaga).done.then(() => {
-      const html = `
+    const html = `
       <!DOCTYPE html>
       <html lang="en">
 
@@ -46,12 +45,10 @@ const SSRHandler: Handler = (req, res, next) => {
         
         <body>
           <div id="root">${renderToString(rootComp)}</div>
-        
-          <script>window.__INITIAL_STATE__ = ${JSON.stringify(
-            store.getState()
-          )}</script>
 
           ${assets
+            .slice()
+            .reverse()
             .map(assetPath => {
               return `<script src="${assetPath}"></script>\n`;
             })
@@ -59,10 +56,7 @@ const SSRHandler: Handler = (req, res, next) => {
         </body>
       </html>
     `;
-      res.send(html);
-    });
-    renderToString(sheet.collectStyles(rootComp));
-    store.close();
+    res.send(html);
   }
 };
 
