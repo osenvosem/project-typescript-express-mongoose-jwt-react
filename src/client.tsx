@@ -5,7 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 
 import Root from "./common/Root/";
-// import configureStore from "./common/configureStore";
+import configureStore from "./common/configureStore";
 
 const isDev = process.env.NODE_ENV;
 

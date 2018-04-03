@@ -7,8 +7,10 @@ import { Provider } from "react-redux";
 import { ServerStyleSheet } from "styled-components";
 
 import Root from "../../../common/Root";
+import configureStore from "../../../common/configureStore";
+import "../../../common/globalStyles";
+
 import { TStaticContext } from "./types";
-// import configureStore from "../../../common/configureStore";
 
 const assets: string[] = JSON.parse(CLIENT_ASSETS).filter((asset: string) =>
   /.js$/.test(asset)
@@ -22,7 +24,7 @@ const SSRHandler: Handler = (req, res, next) => {
 
   const rootComp = (
     // <Provider store={store}>
-    <StaticRouter location={req.url} context={context}>
+    <StaticRouter location={req.originalUrl} context={context}>
       <Root />
     </StaticRouter>
     // </Provider>
@@ -50,7 +52,7 @@ const SSRHandler: Handler = (req, res, next) => {
             .slice()
             .reverse()
             .map(assetPath => {
-              return `<script src="${assetPath}"></script>\n`;
+              return `<script src="${assetPath}"></script>`;
             })
             .join("\n")}
         </body>

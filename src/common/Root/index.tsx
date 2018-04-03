@@ -8,17 +8,32 @@ import SingleUser from "./screens/SingleUser";
 import Login from "./screens/Login";
 import Registration from "./screens/Registration";
 
+const theme = {
+  primary: "#58CDF7",
+  secondary: "#FD739F",
+  tertiary: "#84F4E1",
+  quaternary: "#D3C4D1"
+};
+
+const Main = styled.main`
+  max-width: 630px;
+  margin: 0 auto;
+`;
+
 class Root extends Component {
   render() {
     return (
-      <main>
-        <Switch>
-          <Route exact path="/registration" component={Registration} />
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/" component={UserList} />
-          <Route exact path="/:id" component={SingleUser} />
-        </Switch>
-      </main>
+      <ThemeProvider theme={theme}>
+        <Main>
+          <Switch>
+            <Route exact path="/registration" component={Registration} />
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/" component={UserList} />
+            <Route path="/:id" component={SingleUser} />
+            <Route render={props => <h2>404 Not Found</h2>} />
+          </Switch>
+        </Main>
+      </ThemeProvider>
     );
   }
 }

@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    require: true,
+    required: true,
     minlength: 6,
     maxlength: 30
   },
@@ -56,7 +56,7 @@ userSchema.statics.publicFields = [
 
 const { length, iterations, algorithm } = config.get("crypto");
 
-userSchema.pre<TUserDocument>("save", function(next) {
+userSchema.pre("save", function(next) {
   crypto.randomBytes(length, (err, randB) => {
     if (err) return next(err);
 
