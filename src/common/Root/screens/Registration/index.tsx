@@ -1,90 +1,68 @@
 import React, { SFC } from "react";
-import { Formik, Form, Field, FieldAttributes } from "formik";
+import { Formik, FormikActions, FormikValues } from "formik";
 import yup from "yup";
-import styled, { StyledComponentClass, StyledProps } from "styled-components";
+import styled from "styled-components";
+import axios from "axios";
+
+import {
+  SubmitButton,
+  ErrorMessage,
+  Label,
+  StyledField,
+  Title,
+  ServerErrorMessage
+} from "components";
+
+import { InputBlock, BlockWrapper, StyledForm } from "./components";
+import validationSchema from "./validationSchema";
 
 import { TRegistrationProps } from "./types";
-
-const userSchema = yup.object().shape({
-  username: yup
-    .string()
-    .min(3)
-    .max(30)
-    .required(),
-  email: yup
-    .string()
-    .email()
-    .max(60)
-    .required(),
-  firstName: yup.string().max(30),
-  lastName: yup.string().max(30),
-  password: yup
-    .string()
-    .min(6)
-    .max(30)
-    .required()
-});
 
 const initialValues = {
   username: "",
   email: "",
   firstName: "",
   lastName: "",
-  password: ""
+  password: "",
+  serverErrorMessage: ""
 };
 
-const InputBlock = styled.div`
-  margin-bottom: 40px;
-`;
-
-const SubmitButton = styled.button``;
-
-const ErrorMessage = styled.p`
-  padding: 0;
-  font-style: italic;
-  color: ${({ theme }) => theme.secondary};
-  text-align: right;
-  margin: 6px 20px 6px 0px;
-`;
-
-const Label = styled.label`
-  font-style: italic;
-  color: rgba(0, 0, 0, 0.54);
-  margin-left: 20px;
-`;
-
-const StyledField = styled(Field)`
-  border: 2px solid ${({ theme }) => theme.quaternary};
-  height: 40px;
-  width: 300px;
-  border-radius: 30px;
-  font-size: 1rem;
-  color: rgba(0, 0, 0, 0.87);
-  padding-left: 16px;
-`;
-
-const StyledForm = styled(Form)`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  > div:last-child {
-    display: none;
-  }
-`;
+function onSubmit(
+  values: FormikValues,
+  formikBag: FormikActions<FormikValues>
+) {
+  formikBag.setSubmitting(true);
+  axios
+    .post("/api/registration", values)
+    .then(res => {
+      formikBag.setSubmitting(false);
+      console.log(res);
+    })
+    .catch(err => {
+      formikBag.setSubmitting(false);
+      formikBag.setErrors({ serverErrorMessage: err.response.data });
+    });
+}
 
 const Registration: SFC<TRegistrationProps> = () => {
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={userSchema}
-      onSubmit={(values, formikBag) => {
-        console.log(values);
-      }}
-      render={({ touched, errors, isSubmitting }) => {
-        return (
+      validationSchema={validationSchema}
+      onSubmit={onSubmit}
+      render={({ touched, errors, isSubmitting }) => (
+        <>
+          <Title> Registration </Title>
+          {errors.serverErrorMessage && (
+            <ServerErrorMessage>
+              Server error: {errors.serverErrorMessage}
+            </ServerErrorMessage>
+          )}
           <StyledForm>
             <InputBlock>
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username">
+                Username <span>*</span>
+              </Label>
               <br />
               <StyledField type="text" name="username" id="username" />
               <ErrorMessage>
@@ -92,7 +70,9 @@ const Registration: SFC<TRegistrationProps> = () => {
               </ErrorMessage>
             </InputBlock>
             <InputBlock>
-              <Label htmlFor="email">Email:</Label>
+              <Label htmlFor="email">
+                Email <span>*</span>
+              </Label>
               <br />
               <StyledField type="email" name="email" id="email" />
               <ErrorMessage>
@@ -104,7 +84,7 @@ const Registration: SFC<TRegistrationProps> = () => {
               <br />
               <StyledField type="text" name="firstName" id="firstName" />
               <ErrorMessage>
-                {touched.lastName && errors.lastName && errors.lastName}
+                {touched.firstName && errors.firstName && errors.firstName}
               </ErrorMessage>
             </InputBlock>
             <InputBlock>
@@ -115,20 +95,26 @@ const Registration: SFC<TRegistrationProps> = () => {
                 {touched.lastName && errors.lastName && errors.lastName}
               </ErrorMessage>
             </InputBlock>
-            <InputBlock>
-              <Label htmlFor="password">Password</Label>
-              <br />
-              <StyledField type="passport" name="password" id="password" />
-              <ErrorMessage>
-                {touched.password && errors.password && errors.password}
-              </ErrorMessage>
-            </InputBlock>
-            <SubmitButton type="submit" disabled={isSubmitting}>
-              Submit
-            </SubmitButton>
+            <BlockWrapper>
+              <InputBlock>
+                <Label htmlFor="password">
+                  Password <span>*</span>
+                </Label>
+                <br />
+                <StyledField type="password" name="password" id="password" />
+                <ErrorMessage>
+                  {touched.password && errors.password && errors.password}
+                </ErrorMessage>
+              </InputBlock>
+            </BlockWrapper>
+            <BlockWrapper>
+              <SubmitButton type="submit" disabled={isSubmitting}>
+                Submit
+              </SubmitButton>
+            </BlockWrapper>
           </StyledForm>
-        );
-      }}
+        </>
+      )}
     />
   );
 };

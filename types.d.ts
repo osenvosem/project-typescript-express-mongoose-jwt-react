@@ -3,6 +3,7 @@ declare module "*.css";
 declare module "*.json";
 
 // shared folders
+declare module "components";
 declare module "components/*";
 declare module "services/*";
 
