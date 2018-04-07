@@ -1,8 +1,8 @@
 import React, { SFC } from "react";
 import { Formik, FormikValues, FormikActions } from "formik";
 import axios from "axios";
-
-import { TLoginProps } from "./types";
+import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 
 import {
   Title,
@@ -10,10 +10,14 @@ import {
   StyledField,
   ErrorMessage,
   Label,
-  SubmitButton
+  SubmitButton,
+  BottomLink
 } from "components";
 import { InputBlock, StyledForm } from "./components";
 import validationSchema from "./validationSchema";
+import * as actionCreators from "../../../actionCreators";
+
+import { TLoginProps } from "./types";
 
 const initialValues = {
   username: "",
@@ -22,17 +26,18 @@ const initialValues = {
 };
 
 function onSubmit(
+  props: TLoginProps,
   values: FormikValues,
   formikBag: FormikActions<FormikValues>
 ) {
   formikBag.setSubmitting(true);
   delete values.serverErrorMessage;
   axios
-    .post("/api/login", values, { withCredentials: true })
+    .post("/api/login", values)
     .then(res => {
       formikBag.setSubmitting(false);
-      // set the logged in user to store
-      // redirect
+      props.addLoggedInUser(res.data);
+      props.history.replace("/");
     })
     .catch(err => {
       formikBag.setSubmitting(false);
@@ -40,45 +45,52 @@ function onSubmit(
     });
 }
 
-const Login: SFC<TLoginProps> = () => (
+const Login: SFC<TLoginProps> = props => (
   <Formik
     initialValues={initialValues}
     validationSchema={validationSchema}
-    onSubmit={onSubmit}
-    render={({ touched, errors, isSubmitting }) => (
-      <>
-        <Title>Login</Title>
-        {errors.serverErrorMessage && (
-          <ServerErrorMessage>
-            Server error: {errors.serverErrorMessage}
-          </ServerErrorMessage>
-        )}
-        <StyledForm>
-          <InputBlock>
-            <Label htmlFor="username">
-              Username <span>*</span>
-            </Label>
-            <br />
-            <StyledField type="text" name="username" id="username" />
-            <ErrorMessage>
-              {touched.username && errors.username && errors.username}
-            </ErrorMessage>
-          </InputBlock>
-          <InputBlock>
-            <Label htmlFor="password">
-              Password <span>*</span>
-            </Label>
-            <br />
-            <StyledField type="password" name="password" id="password" />
-            <ErrorMessage>
-              {touched.password && errors.password && errors.password}
-            </ErrorMessage>
-          </InputBlock>
-          <SubmitButton>Log in</SubmitButton>
-        </StyledForm>
-      </>
-    )}
+    onSubmit={onSubmit.bind(null, props)}
+    render={({ touched, errors, isSubmitting }) => {
+      return props.loggedInUser ? (
+        <Redirect to="/" />
+      ) : (
+        <>
+          <Title>Login</Title>
+          {errors.serverErrorMessage && (
+            <ServerErrorMessage>
+              Server error: {errors.serverErrorMessage}
+            </ServerErrorMessage>
+          )}
+          <StyledForm>
+            <InputBlock>
+              <Label htmlFor="username">
+                Username <span>*</span>
+              </Label>
+              <br />
+              <StyledField type="text" name="username" id="username" />
+              <ErrorMessage>
+                {touched.username && errors.username && errors.username}
+              </ErrorMessage>
+            </InputBlock>
+            <InputBlock>
+              <Label htmlFor="password">
+                Password <span>*</span>
+              </Label>
+              <br />
+              <StyledField type="password" name="password" id="password" />
+              <ErrorMessage>
+                {touched.password && errors.password && errors.password}
+              </ErrorMessage>
+            </InputBlock>
+            <SubmitButton>Log in</SubmitButton>
+            <BottomLink to="/registration">
+              ...or register a new account if you don't have one.
+            </BottomLink>
+          </StyledForm>
+        </>
+      );
+    }}
   />
 );
 
-export default Login;
+export default connect(state => state, actionCreators)(Login);

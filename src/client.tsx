@@ -9,16 +9,16 @@ import configureStore from "./common/configureStore";
 
 const isDev = process.env.NODE_ENV;
 
-// const store = configureStore(window.__INITIAL_STATE__);
+const store = configureStore(window.__INITIAL_STATE__);
 // @ts-ignore
 // store.runSaga(todoAppSaga);
 
 const RootComponent = (
-  // <Provider store={store}>
-  <BrowserRouter>
-    <Root />
-  </BrowserRouter>
-  // </Provider>
+  <Provider store={store}>
+    <BrowserRouter>
+      <Root />
+    </BrowserRouter>
+  </Provider>
 );
 
 const rootElement = document.body.querySelector("#root");

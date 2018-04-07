@@ -19,15 +19,15 @@ const assets: string[] = JSON.parse(CLIENT_ASSETS).filter((asset: string) =>
 const SSRHandler: Handler = (req, res, next) => {
   const context: TStaticContext = {};
   const modules: string[] = [];
-  // const store = configureStore();
+  const store = configureStore();
   const sheet = new ServerStyleSheet();
 
   const rootComp = (
-    // <Provider store={store}>
-    <StaticRouter location={req.originalUrl} context={context}>
-      <Root />
-    </StaticRouter>
-    // </Provider>
+    <Provider store={store}>
+      <StaticRouter location={req.originalUrl} context={context}>
+        <Root />
+      </StaticRouter>
+    </Provider>
   );
 
   if (context.url) {

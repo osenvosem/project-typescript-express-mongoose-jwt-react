@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Field, Form } from "formik";
+import { Link } from "react-router-dom";
 
 export const Title = styled.h1`
   font-size: 41.8px;
@@ -24,7 +25,6 @@ export const SubmitButton = styled.button`
   border-radius: 40px;
   font-weight: 100;
   border: none;
-  margin-top: 1rem;
   :disabled {
     opacity: 0.5;
   }
@@ -56,4 +56,15 @@ export const StyledField = styled(Field)`
   font-size: 1rem;
   color: rgba(0, 0, 0, 0.87);
   padding-left: 16px;
+`;
+
+export const BottomLink = styled(Link)`
+  margin-top: 20px;
+  font-style: italic;
+  color: ${({ theme }) => theme.quaternary};
+  text-align: center;
+  :hover {
+    color: ${({ theme }) => theme.tertiary};
+  }
+  align-self: stretch;
 `;

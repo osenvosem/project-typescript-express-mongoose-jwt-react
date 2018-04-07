@@ -7,8 +7,9 @@ declare module "components";
 declare module "components/*";
 declare module "services/*";
 
-interface window {
+interface Window {
   __INITIAL_STATE__: any;
+  __REDUX_DEVTOOLS_EXTENSION__: any;
 }
 
 declare const CLIENT_ASSETS: any;

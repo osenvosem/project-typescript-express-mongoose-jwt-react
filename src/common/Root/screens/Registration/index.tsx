@@ -10,7 +10,8 @@ import {
   Label,
   StyledField,
   Title,
-  ServerErrorMessage
+  ServerErrorMessage,
+  BottomLink
 } from "components";
 
 import { InputBlock, BlockWrapper, StyledForm } from "./components";
@@ -111,6 +112,11 @@ const Registration: SFC<TRegistrationProps> = () => {
               <SubmitButton type="submit" disabled={isSubmitting}>
                 Submit
               </SubmitButton>
+            </BlockWrapper>
+            <BlockWrapper>
+              <BottomLink to="/login">
+                …or log in if you have an account.
+              </BottomLink>
             </BlockWrapper>
           </StyledForm>
         </>
