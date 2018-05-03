@@ -1,5 +1,7 @@
 ## (WIP) Universal React application with JWT authentication
 
+Universal react application with JWT authentication written using Typescript, Node.js, Express.js, Passport.js, React, Redux, Styled Components, Formik.
+
 ## Scripts
 
 ```sh

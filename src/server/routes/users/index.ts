@@ -6,7 +6,7 @@ import config from "config";
 import mongoose from "mongoose";
 
 import User from "../../models/User";
-import { TUserDocument, TUser } from "../../models/User/types";
+import { TUser } from "../../models/User/types";
 import { TRequestErrorWithStatusCode } from "./types";
 
 const router = Router();
@@ -50,7 +50,7 @@ router.get("/:id", jwtAuth, validateUserIdParam, (req, res, next) => {
 
   User.findById(id)
     .lean()
-    .then(rawUser => {
+    .then((rawUser: TUser) => {
       const user = User.filterPublicFields(rawUser);
       res.json(user);
     })
