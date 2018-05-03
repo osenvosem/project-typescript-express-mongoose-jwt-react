@@ -1,15 +1,22 @@
-import { createStore, compose, StoreEnhancer } from "redux";
-import rootReducer from "./reducers";
+import { createStore, compose, StoreEnhancer, applyMiddleware } from "redux";
+import createSagaMiddleware, { END } from "redux-saga";
 
-import { TGlobalState } from "./types";
+import rootReducer from "./rootReducer";
 
-const defaultState: TGlobalState = {
+import { TGlobalState, TCustomStore } from "./types";
+
+export const defaultState: TGlobalState = {
   users: [],
-  loggedInUser: null
+  loggedInUser: null,
+  requestInProgress: false,
+  error: null
 };
 
 export default function configureStore(preloadedState = defaultState) {
   const enhancers: StoreEnhancer<TGlobalState>[] = [];
+
+  const sagaMiddleware = createSagaMiddleware();
+  enhancers.push(applyMiddleware(sagaMiddleware));
 
   if (
     process.env.NODE_ENV === "development" &&
@@ -19,6 +26,14 @@ export default function configureStore(preloadedState = defaultState) {
     enhancers.push(window.__REDUX_DEVTOOLS_EXTENSION__());
   }
 
-  const store = createStore(rootReducer, preloadedState, compose(...enhancers));
+  const store = createStore(
+    rootReducer,
+    preloadedState,
+    compose(...enhancers)
+  ) as TCustomStore<TGlobalState>;
+
+  store.runSaga = sagaMiddleware.run;
+  store.close = () => store.dispatch(END);
+
   return store;
 }

@@ -1,6 +1,6 @@
 import React, { SFC } from "react";
 import { Formik, FormikValues, FormikActions } from "formik";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 
@@ -12,12 +12,14 @@ import {
   Label,
   SubmitButton,
   BottomLink
-} from "components";
+} from "Components/styled";
+
 import { InputBlock, StyledForm } from "./components";
 import validationSchema from "./validationSchema";
 import * as actionCreators from "../../../actionCreators";
 
 import { TLoginProps } from "./types";
+import { TGlobalState } from "../../../types";
 
 const initialValues = {
   username: "",
@@ -39,9 +41,9 @@ function onSubmit(
       props.addLoggedInUser(res.data);
       props.history.replace("/");
     })
-    .catch(err => {
+    .catch((err: AxiosError) => {
       formikBag.setSubmitting(false);
-      formikBag.setErrors({ serverErrorMessage: err.response.data });
+      formikBag.setErrors({ serverErrorMessage: err!.response!.data });
     });
 }
 
@@ -93,4 +95,10 @@ const Login: SFC<TLoginProps> = props => (
   />
 );
 
-export default connect(state => state, actionCreators)(Login);
+function mapStateToProps(state: TGlobalState) {
+  return {
+    loggedInUser: state.loggedInUser
+  };
+}
+
+export default connect(mapStateToProps, actionCreators)(Login);

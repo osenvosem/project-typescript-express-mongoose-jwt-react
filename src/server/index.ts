@@ -1,4 +1,3 @@
-import "babel-polyfill";
 import config from "config";
 import app from "./server";
 

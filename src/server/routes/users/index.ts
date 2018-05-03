@@ -6,7 +6,7 @@ import config from "config";
 import mongoose from "mongoose";
 
 import User from "../../models/User";
-import { TUserDocument } from "../../models/User/types";
+import { TUserDocument, TUser } from "../../models/User/types";
 import { TRequestErrorWithStatusCode } from "./types";
 
 const router = Router();
@@ -25,35 +25,40 @@ const cookieOptions = {
 
 const jwtOptions: SignOptions = { expiresIn: config.get("jwt.expiresIn") };
 
+const validateUserIdParam: RequestHandler = (req, res, next) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    const err = new Error("User id is invalid.") as TRequestErrorWithStatusCode;
+    err.statusCode = 400;
+    return next(err);
+  }
+  next();
+};
+
 router.get("/", jwtAuth, (req, res, next) => {
   User.find()
     .lean()
-    .then(rawUsers => {
-      const filteredUsers = (rawUsers as TUserDocument[]).map(rawUser =>
-        _.pick(rawUser, User.publicFields)
-      );
+    .then((rawUsers: TUser[]) => {
+      const filteredUsers = User.filterPublicFields(rawUsers);
 
       res.json(filteredUsers);
     })
     .catch(next);
 });
 
-router.get("/:id", jwtAuth, (req, res, next) => {
+router.get("/:id", jwtAuth, validateUserIdParam, (req, res, next) => {
   const { id } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    const err = new Error("User id is invalid.") as TRequestErrorWithStatusCode;
-    err.statusCode = 400;
-    return next(err);
-  }
 
   User.findById(id)
     .lean()
     .then(rawUser => {
-      const user = _.pick(rawUser as TUserDocument, User.publicFields);
+      const user = User.filterPublicFields(rawUser);
       res.json(user);
     })
     .catch(next);
+});
+
+router.post("/:id/edit", jwtAuth, validateUserIdParam, (req, res, next) => {
+  const { id } = req.params;
 });
 
 router.post("/registration", (req, res, next) => {
@@ -61,7 +66,7 @@ router.post("/registration", (req, res, next) => {
   newUser
     .save()
     .then(rawUser => {
-      const user = _.pick(rawUser, User.publicFields);
+      const user = User.filterPublicFields(rawUser);
       const payload = { id: user._id };
 
       jwt.sign(payload, config.get("jwt.secret"), jwtOptions, (err, token) => {
@@ -75,7 +80,9 @@ router.post("/registration", (req, res, next) => {
 });
 
 router.post("/login", (req, res, next) => {
-  const { body: { username, password } } = req;
+  const {
+    body: { username, password }
+  } = req;
 
   if (!username || !password) {
     const err = new Error(
@@ -106,7 +113,7 @@ router.post("/login", (req, res, next) => {
           return next(err);
         }
 
-        const user = _.pick(rawUser, User.publicFields);
+        const user = User.filterPublicFields(rawUser.toObject());
 
         jwt.sign(
           { id: user._id },
@@ -122,6 +129,12 @@ router.post("/login", (req, res, next) => {
       })
       .catch(next);
   });
+});
+
+router.post("/logout", (req, res, next) => {
+  res.clearCookie("access_token");
+  delete req.user;
+  res.status(200).send("Logged out");
 });
 
 export default router;

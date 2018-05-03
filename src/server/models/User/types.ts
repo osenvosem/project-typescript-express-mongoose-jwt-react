@@ -1,28 +1,53 @@
-import {
-  Document,
-  Model,
-  Types,
-  HookSyncCallback,
-  HookNextFunction
-} from "mongoose";
+import { Schema, Model, Document, Types } from "mongoose";
 
-export interface TUserDocument extends Document {
+export interface TUser {
   _id: Types.ObjectId;
   username: string;
   email: string;
-  firstName?: string;
-  lastName?: string;
   password: string;
   salt: string;
   createdAt: Date;
   updatedAt: Date;
-  checkPassword(this: TUserDocument, password: string): Promise<boolean>;
+  firstName?: string;
+  lastName?: string;
 }
 
-export interface TUserModel extends Model<TUserDocument> {
-  publicFields: string[];
+export type TUserPublicFields =
+  | "_id"
+  | "username"
+  | "email"
+  | "firstName"
+  | "lastName"
+  | "createdAt"
+  | "updatedAt";
+
+export type TUserUpdateFields =
+  | "username"
+  | "email"
+  | "firstName"
+  | "lastName"
+  | "password";
+
+export interface TUserSchema extends Schema {
+  statics: TUserSchemaStatics;
+  methods: TUserSchemaMethods;
 }
 
-export interface TCheckPassword<T extends Document> {
-  (this: T, password: string): Promise<boolean>;
+interface TUserSchemaStatics {
+  publicFields: TUserPublicFields[];
+  updateFields: TUserUpdateFields[];
+  filterPublicFields(user: TUser): Pick<TUser, TUserPublicFields>;
+  filterPublicFields(users: TUser[]): Pick<TUser, TUserPublicFields>[];
+
+  filterUpdateFields(user: TUser): Pick<TUser, TUserUpdateFields>;
 }
+
+export interface TUserSchemaMethods {
+  checkPassword: (this: TUserDocument, password: string) => Promise<boolean>;
+}
+
+export interface TUserDocument extends TUser, Document, TUserSchemaMethods {
+  _id: Types.ObjectId;
+}
+
+export interface TUserModel extends Model<TUserDocument>, TUserSchemaStatics {}

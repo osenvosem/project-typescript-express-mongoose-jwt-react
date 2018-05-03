@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styledComponents";
 import { Form } from "formik";
 
 export const StyledForm = styled(Form)`

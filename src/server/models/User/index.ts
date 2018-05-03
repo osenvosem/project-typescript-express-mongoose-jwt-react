@@ -1,9 +1,23 @@
-import mongoose, { HookSyncCallback } from "mongoose";
+import mongoose, {
+  HookSyncCallback,
+  Types,
+  Schema,
+  Model,
+  Document
+} from "mongoose";
 import crypto from "crypto";
 import config from "config";
-import { TUserDocument, TUserModel, TCheckPassword } from "./types";
 
-const userSchema = new mongoose.Schema({
+import {
+  TUserDocument,
+  TUserModel,
+  TUserSchema,
+  TUser,
+  TUserPublicFields,
+  TUserUpdateFields
+} from "./types";
+
+const userSchema: TUserSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
@@ -44,19 +58,55 @@ const userSchema = new mongoose.Schema({
 
 userSchema.set("timestamps", true);
 
-userSchema.statics.publicFields = [
-  "_id",
-  "username",
-  "firstName",
-  "lastName",
-  "email",
-  "createdAt",
-  "updatedAt"
-];
+userSchema.statics = {
+  publicFields: [
+    "_id",
+    "username",
+    "firstName",
+    "lastName",
+    "email",
+    "createdAt",
+    "updatedAt"
+  ],
+
+  updateFields: ["username", "firstName", "lastName", "email", "password"],
+
+  filterPublicFields(userOrUsers: any): any {
+    if (Array.isArray(userOrUsers)) {
+      return userOrUsers.map(rawUser => {
+        return this.publicFields.reduce(
+          (acc, field) => {
+            acc[field] = rawUser[field];
+            return acc;
+          },
+          {} as Pick<TUser, TUserPublicFields>
+        );
+      });
+    } else {
+      return userSchema.statics.publicFields.reduce(
+        (acc, field) => {
+          acc[field] = userOrUsers[field];
+          return acc;
+        },
+        {} as Pick<TUser, TUserPublicFields>
+      );
+    }
+  },
+
+  filterUpdateFields(user) {
+    return userSchema.statics.updateFields.reduce(
+      (acc, field) => {
+        acc[field] = user[field];
+        return acc;
+      },
+      {} as Pick<TUser, TUserUpdateFields>
+    );
+  }
+};
 
 const { length, iterations, algorithm } = config.get("crypto");
 
-userSchema.pre("save", function(next) {
+userSchema.pre<TUserDocument>("save", function(next) {
   crypto.randomBytes(length, (err, randB) => {
     if (err) return next(err);
 
@@ -95,6 +145,6 @@ userSchema.methods.checkPassword = function(password: string) {
       }
     );
   });
-} as TCheckPassword<TUserDocument>;
+};
 
 export default mongoose.model<TUserDocument, TUserModel>("User", userSchema);

@@ -11,7 +11,7 @@
   },
   "jwt": {
     "secret": "C6sI6x8T+e79+zAuKyzApVAKjUl3bVCEvAvEmqYyR/Iq7yuR",
-    "expiresIn": "36000"
+    "expiresIn": "86400000"
   },
   "cookies": {
     "secret": "xcXdl+wG3X7cdZm/skQRn+8NbkBSo4c9t7U+7V4t4kEOQmhE",

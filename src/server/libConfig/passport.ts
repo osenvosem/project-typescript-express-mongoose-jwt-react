@@ -6,6 +6,8 @@ import {
 } from "passport-jwt";
 import { Application } from "express";
 import config from "config";
+import pick from "lodash/pick";
+
 import User from "../models/User";
 
 export default (app: Application) => {
@@ -27,7 +29,7 @@ export default (app: Application) => {
       User.findById(payload.id, (err, user) => {
         if (err) return done(err);
         if (!user) return done(null, false);
-        return done(null, user);
+        return done(null, pick(user, User.publicFields));
       });
     })
   );

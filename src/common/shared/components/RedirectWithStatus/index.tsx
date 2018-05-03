@@ -4,7 +4,6 @@ import { IRedirectWithStatusProps } from "./interfaces";
 
 const RedirectWithStatus = (props: IRedirectWithStatusProps) => {
   const { from, to, status } = props;
-  console.log("From RedirectWithStatus!!!");
 
   return (
     <Route

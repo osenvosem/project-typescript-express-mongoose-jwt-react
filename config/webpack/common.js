@@ -1,13 +1,10 @@
+const path = require("path");
 const globalConfig = require("config");
 const publicPath = globalConfig.get("publicPath");
 
 module.exports = {
   module: {
     rules: [
-      {
-        test: /\.tsx?$/,
-        use: "babel-loader"
-      },
       {
         test: /.(woff2?|ttf|eot|svg)/,
         use: {
@@ -33,6 +30,9 @@ module.exports = {
   },
   resolve: {
     extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
-    modules: ["node_modules", "shared"]
+    alias: {
+      Components: path.resolve("src/common/shared/components"),
+      styledComponents: path.resolve("src/common/styledComponents.ts")
+    }
   }
 };

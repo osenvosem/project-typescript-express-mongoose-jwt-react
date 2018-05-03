@@ -10,7 +10,12 @@
     "allowJs": true,
     "jsx": "preserve",
     "strict": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "baseUrl": ".",
+    "paths": {
+      "Components/*": ["src/common/shared/components/*"],
+      "styledComponents": ["src/common/styledComponents.ts"]
+    }
   },
   "exclude": ["node_modules"]
 }

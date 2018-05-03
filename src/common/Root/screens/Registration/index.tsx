@@ -1,8 +1,10 @@
 import React, { SFC } from "react";
 import { Formik, FormikActions, FormikValues } from "formik";
 import yup from "yup";
-import styled from "styled-components";
+import styled from "styledComponents";
 import axios from "axios";
+import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 
 import {
   SubmitButton,
@@ -11,12 +13,15 @@ import {
   StyledField,
   Title,
   ServerErrorMessage,
-  BottomLink
-} from "components";
-
-import { InputBlock, BlockWrapper, StyledForm } from "./components";
+  BottomLink,
+  InputBlock,
+  BlockWrapper,
+  StyledForm
+} from "Components/styled";
 import validationSchema from "./validationSchema";
+import { addLoggedInUser } from "../../../actionCreators";
 
+import { TGlobalState } from "../../../types";
 import { TRegistrationProps } from "./types";
 
 const initialValues = {
@@ -29,6 +34,7 @@ const initialValues = {
 };
 
 function onSubmit(
+  props: TRegistrationProps,
   values: FormikValues,
   formikBag: FormikActions<FormikValues>
 ) {
@@ -37,7 +43,8 @@ function onSubmit(
     .post("/api/registration", values)
     .then(res => {
       formikBag.setSubmitting(false);
-      console.log(res);
+      props.addLoggedInUser(res.data);
+      props.history.replace("/");
     })
     .catch(err => {
       formikBag.setSubmitting(false);
@@ -45,84 +52,94 @@ function onSubmit(
     });
 }
 
-const Registration: SFC<TRegistrationProps> = () => {
+const Registration: SFC<TRegistrationProps> = props => {
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={onSubmit}
-      render={({ touched, errors, isSubmitting }) => (
-        <>
-          <Title> Registration </Title>
-          {errors.serverErrorMessage && (
-            <ServerErrorMessage>
-              Server error: {errors.serverErrorMessage}
-            </ServerErrorMessage>
-          )}
-          <StyledForm>
-            <InputBlock>
-              <Label htmlFor="username">
-                Username <span>*</span>
-              </Label>
-              <br />
-              <StyledField type="text" name="username" id="username" />
-              <ErrorMessage>
-                {touched.username && errors.username && errors.username}
-              </ErrorMessage>
-            </InputBlock>
-            <InputBlock>
-              <Label htmlFor="email">
-                Email <span>*</span>
-              </Label>
-              <br />
-              <StyledField type="email" name="email" id="email" />
-              <ErrorMessage>
-                {touched.email && errors.email && errors.email}
-              </ErrorMessage>
-            </InputBlock>
-            <InputBlock>
-              <Label htmlFor="firstName">First Name</Label>
-              <br />
-              <StyledField type="text" name="firstName" id="firstName" />
-              <ErrorMessage>
-                {touched.firstName && errors.firstName && errors.firstName}
-              </ErrorMessage>
-            </InputBlock>
-            <InputBlock>
-              <Label htmlFor="lastName">Last Name</Label>
-              <br />
-              <StyledField type="text" name="lastName" id="lastName" />
-              <ErrorMessage>
-                {touched.lastName && errors.lastName && errors.lastName}
-              </ErrorMessage>
-            </InputBlock>
-            <BlockWrapper>
+      onSubmit={onSubmit.bind(null, props)}
+      render={({ touched, errors, isSubmitting }) => {
+        return props.loggedInUser ? (
+          <Redirect to="/" />
+        ) : (
+          <>
+            <Title> Registration </Title>
+            {errors.serverErrorMessage && (
+              <ServerErrorMessage>
+                Server error: {errors.serverErrorMessage}
+              </ServerErrorMessage>
+            )}
+            <StyledForm>
               <InputBlock>
-                <Label htmlFor="password">
-                  Password <span>*</span>
+                <Label htmlFor="username">
+                  Username <span>*</span>
                 </Label>
                 <br />
-                <StyledField type="password" name="password" id="password" />
+                <StyledField type="text" name="username" id="username" />
                 <ErrorMessage>
-                  {touched.password && errors.password && errors.password}
+                  {touched.username && errors.username && errors.username}
                 </ErrorMessage>
               </InputBlock>
-            </BlockWrapper>
-            <BlockWrapper>
-              <SubmitButton type="submit" disabled={isSubmitting}>
-                Submit
-              </SubmitButton>
-            </BlockWrapper>
-            <BlockWrapper>
-              <BottomLink to="/login">
-                …or log in if you have an account.
-              </BottomLink>
-            </BlockWrapper>
-          </StyledForm>
-        </>
-      )}
+              <InputBlock>
+                <Label htmlFor="email">
+                  Email <span>*</span>
+                </Label>
+                <br />
+                <StyledField type="email" name="email" id="email" />
+                <ErrorMessage>
+                  {touched.email && errors.email && errors.email}
+                </ErrorMessage>
+              </InputBlock>
+              <InputBlock>
+                <Label htmlFor="firstName">First Name</Label>
+                <br />
+                <StyledField type="text" name="firstName" id="firstName" />
+                <ErrorMessage>
+                  {touched.firstName && errors.firstName && errors.firstName}
+                </ErrorMessage>
+              </InputBlock>
+              <InputBlock>
+                <Label htmlFor="lastName">Last Name</Label>
+                <br />
+                <StyledField type="text" name="lastName" id="lastName" />
+                <ErrorMessage>
+                  {touched.lastName && errors.lastName && errors.lastName}
+                </ErrorMessage>
+              </InputBlock>
+              <BlockWrapper>
+                <InputBlock>
+                  <Label htmlFor="password">
+                    Password <span>*</span>
+                  </Label>
+                  <br />
+                  <StyledField type="password" name="password" id="password" />
+                  <ErrorMessage>
+                    {touched.password && errors.password && errors.password}
+                  </ErrorMessage>
+                </InputBlock>
+              </BlockWrapper>
+              <BlockWrapper>
+                <SubmitButton type="submit" disabled={isSubmitting}>
+                  Submit
+                </SubmitButton>
+              </BlockWrapper>
+              <BlockWrapper>
+                <BottomLink to="/login">
+                  …or log in if you have an account.
+                </BottomLink>
+              </BlockWrapper>
+            </StyledForm>
+          </>
+        );
+      }}
     />
   );
 };
 
-export default Registration;
+function mapStateToProps(state: TGlobalState) {
+  return {
+    loggedInUser: state.loggedInUser
+  };
+}
+
+export default connect(mapStateToProps, { addLoggedInUser })(Registration);
