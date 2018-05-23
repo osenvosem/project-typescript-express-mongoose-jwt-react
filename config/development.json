@@ -1,4 +1,10 @@
 {
   "serverPort": 3001,
-  "wdsPort": 3000
+  "wdsPort": 3000,
+  "jwt": {
+    "secret": "dev_jwt_secret"
+  },
+  "cookies": {
+    "secret": "dev_cookies_secret"
+  }
 }
