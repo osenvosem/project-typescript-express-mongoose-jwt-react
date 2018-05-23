@@ -1,11 +1,13 @@
 {
   "name": "project-typescript-express-mongoose-jwt-react",
   "version": "1.0.0",
-  "description": "Universal Typescript React/Redux application with JWT authentication.",
-  "author": "Sergei Samsonov <osenvosem@gmail.com> (https://github.com/osenvosem)",
+  "description":
+    "Universal Typescript React/Redux application with JWT authentication.",
+  "author":
+    "Sergei Samsonov <osenvosem@gmail.com> (https://github.com/osenvosem)",
   "license": "MIT",
   "scripts": {
-    "start": "NODE_ENV=production node build/server.bundle.js",
+    "start": "NODE_ENV=production PORT=8080 node build/server.bundle.js",
     "start:dev": "NODE_ENV=development node scripts/start.js",
     "build": "NODE_ENV=production node scripts/build.js",
     "clean": "node scripts/clean.js"
