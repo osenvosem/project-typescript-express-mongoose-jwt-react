@@ -10,6 +10,7 @@
     "start": "NODE_ENV=production node build/server.bundle.js",
     "start:dev": "NODE_ENV=development node scripts/start.js",
     "postinstall": "NODE_ENV=production node scripts/build.js",
+    "heroku-postbuild": "NODE_ENV=production node scripts/build.js",
     "clean": "node scripts/clean.js"
   },
   "devDependencies": {
