@@ -14,18 +14,27 @@ import {
   BottomLink
 } from "Components/styled";
 
-import { InputBlock, StyledForm } from "./components";
+import { InputBlock, StyledForm, DefaultUserMessage } from "./components";
 import validationSchema from "./validationSchema";
 import * as actionCreators from "../../../actionCreators";
 
 import { TLoginProps } from "./types";
 import { TGlobalState } from "../../../types";
 
-const initialValues = {
+let initialValues = {
   username: "",
   password: "",
   serverErrorMessage: ""
 };
+
+if (__CLIENT__ && !localStorage.notFirstVisit) {
+  initialValues = {
+    username: "elon",
+    password: "123123",
+    serverErrorMessage: ""
+  };
+  localStorage.setItem("notFirstVisit", "1");
+}
 
 function onSubmit(
   props: TLoginProps,
@@ -88,6 +97,10 @@ const Login: SFC<TLoginProps> = props => (
             <BottomLink to="/registration">
               ...or register a new account if you don't have one.
             </BottomLink>
+            <DefaultUserMessage>
+              The default profile username is <span>elon</span> and the password
+              is <span>123123</span>
+            </DefaultUserMessage>
           </StyledForm>
         </>
       );
