@@ -1,10 +1,3 @@
 {
-  "serverPort": "PORT",
-  "dbUrl": "MONGODB_URI",
-  "jwt": {
-    "secret": "JWT_SECRET"
-  },
-  "cookies": {
-    "secret": "COOKIES_SECRET"
-  }
+  "serverPort": 8080
 }

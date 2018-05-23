@@ -15,7 +15,7 @@
 Clone the repository, install the dependencies and use the scripts:
 
 ```sh
-# build and start the app in production mode
+# build and start the app in production mode (run build before this)
 npm start | yarn start
 
 # start in development mode (on port 3000 by default)
