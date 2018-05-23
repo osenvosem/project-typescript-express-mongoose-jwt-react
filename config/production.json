@@ -1,10 +1,9 @@
 {
-  "serverPort": "port",
-  "dbUrl": "dbUrl",
+  "serverPort": "8080",
   "jwt": {
-    "secret": "jwt_secret"
+    "secret": "C6sI6x8T+e79+zAuKyzApVAKjUl3bVCEvAvEmqYyR/Iq7yuR"
   },
   "cookies": {
-    "secret": "cookies_secret"
+    "secret": "xcXdl+wG3X7cdZm/skQRn+8NbkBSo4c9t7U+7V4t4kEOQmhE"
   }
 }

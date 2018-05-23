@@ -60,5 +60,6 @@ typings/
 # next.js build output
 .next
 
+build/
 public/
 src/server/routes/SSR/react-loadable.json

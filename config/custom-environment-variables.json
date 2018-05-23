@@ -1,6 +1,0 @@
-{
-  "port": "PORT",
-  "dbUrl": "MONGODB_URI",
-  "jwt_secret": "JWT_SECRET",
-  "cookies_secret": "COOKIES_SECRET"
-}
