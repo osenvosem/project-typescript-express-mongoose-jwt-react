@@ -1,10 +1,8 @@
 {
   "name": "project-typescript-express-mongoose-jwt-react",
   "version": "1.0.0",
-  "description":
-    "Universal Typescript React/Redux application with JWT authentication.",
-  "author":
-    "Sergei Samsonov <osenvosem@gmail.com> (https://github.com/osenvosem)",
+  "description": "Universal Typescript React/Redux application with JWT authentication.",
+  "author": "Sergei Samsonov <osenvosem@gmail.com> (https://github.com/osenvosem)",
   "license": "MIT",
   "scripts": {
     "start": "run-s clean build start:prod",
@@ -48,7 +46,6 @@
     "file-loader": "^1.1.11",
     "jest": "^22.4.4",
     "nodemon": "^1.17.4",
-    "npm-run-all": "^4.1.3",
     "react-dev-utils": "^5.0.1",
     "react-hot-loader": "^4.2.0",
     "webpack": "^4.8.3",
@@ -64,6 +61,7 @@
     "formik": "^0.11.11",
     "jsonwebtoken": "^8.2.1",
     "mongoose": "^5.1.2",
+    "npm-run-all": "^4.1.3",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "polished": "^1.9.2",
