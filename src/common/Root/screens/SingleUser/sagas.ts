@@ -1,15 +1,20 @@
-import { takeLatest, call, put } from "redux-saga/effects";
+import { takeLatest, call, put, all } from "redux-saga/effects";
 
-import { fetchSingleUser } from "./apiService";
+import { fetchSingleUser, removeUser } from "./apiService";
 import {
   fetchSingleUserSucceeded,
   fetchSingleUserFailed
 } from "./actionCreators";
 
-import { FetchSingleUserTypes, TFetchSingleUserActions } from "./types";
+import {
+  fetchSingleUserTypes,
+  removeUserTypes,
+  TFetchSingleUserActions,
+  TRemoveUserAction
+} from "./types";
 
 export function* fetchSingleUserWorker(action: TFetchSingleUserActions) {
-  if (action.type === FetchSingleUserTypes.FETCH_SINGLE_USER_REQUESTED) {
+  if (action.type === fetchSingleUserTypes.FETCH_SINGLE_USER_REQUESTED) {
     try {
       const user = yield call(fetchSingleUser, action.id);
       yield put(fetchSingleUserSucceeded(user));
@@ -19,9 +24,20 @@ export function* fetchSingleUserWorker(action: TFetchSingleUserActions) {
   }
 }
 
+export function* removeUserWorker(action: TRemoveUserAction) {
+  try {
+    yield call(removeUser, action.id);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 export default function* watchFetchSingleUser() {
-  yield takeLatest(
-    FetchSingleUserTypes.FETCH_SINGLE_USER_REQUESTED,
-    fetchSingleUserWorker
-  );
+  yield all([
+    takeLatest(
+      fetchSingleUserTypes.FETCH_SINGLE_USER_REQUESTED,
+      fetchSingleUserWorker
+    ),
+    takeLatest(removeUserTypes.REMOVE_USER, removeUserWorker)
+  ]);
 }

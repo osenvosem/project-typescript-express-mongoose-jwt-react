@@ -2,26 +2,35 @@ import {
   TFetchSingleUserRequestedActionCreator,
   TFetchSingleUserSucceededActionCreator,
   TFetchSingleUserFailedActionCreator,
-  FetchSingleUserTypes
+  TRemoveUserActionCreator,
+  fetchSingleUserTypes,
+  removeUserTypes
 } from "./types";
 
 export const fetchSingleUserRequested: TFetchSingleUserRequestedActionCreator = id => {
   return {
-    type: FetchSingleUserTypes.FETCH_SINGLE_USER_REQUESTED,
+    type: fetchSingleUserTypes.FETCH_SINGLE_USER_REQUESTED,
     id
   };
 };
 
 export const fetchSingleUserSucceeded: TFetchSingleUserSucceededActionCreator = user => {
   return {
-    type: FetchSingleUserTypes.FETCH_SINGLE_USER_SUCCEEDED,
+    type: fetchSingleUserTypes.FETCH_SINGLE_USER_SUCCEEDED,
     user
   };
 };
 
 export const fetchSingleUserFailed: TFetchSingleUserFailedActionCreator = error => {
   return {
-    type: FetchSingleUserTypes.FETCH_SINGLE_USER_FAILED,
+    type: fetchSingleUserTypes.FETCH_SINGLE_USER_FAILED,
     error
+  };
+};
+
+export const removeUser: TRemoveUserActionCreator = id => {
+  return {
+    type: removeUserTypes.REMOVE_USER,
+    id
   };
 };

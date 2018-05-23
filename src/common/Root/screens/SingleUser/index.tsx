@@ -15,6 +15,7 @@ import {
 } from "./components/styled";
 import ArrowBack from "./components/ArrowBack";
 import * as actionCreators from "./actionCreators";
+import { removeLoggedInUser } from "../../../actionCreators";
 
 import { TSingleUserProps, TOwnProps } from "./types";
 import { TGlobalState, TUser } from "../../../types";
@@ -25,6 +26,20 @@ class SingleUser extends Component<TSingleUserProps> {
 
     if (__SERVER__) props.fetchSingleUserRequested(this.props.match.params.id);
   }
+
+  removeUser = () => {
+    const {
+      history,
+      match: {
+        params: { id }
+      },
+      removeUser,
+      removeLoggedInUser
+    } = this.props;
+    removeUser(id);
+    removeLoggedInUser();
+    history.push("/login");
+  };
 
   render() {
     const {
@@ -70,7 +85,10 @@ class SingleUser extends Component<TSingleUserProps> {
           {loggedInUserId === idUrlParam && (
             <Buttons>
               <EditButton to={`/${idUrlParam}/edit`}>Edit profile</EditButton>
-              <DeleteButton to="/delete">Delete account</DeleteButton>
+              {/* the "to" attribute is for solving a type issue */}
+              <DeleteButton to="" onClick={this.removeUser}>
+                Delete account
+              </DeleteButton>
             </Buttons>
           )}
         </Card>
@@ -79,4 +97,7 @@ class SingleUser extends Component<TSingleUserProps> {
   }
 }
 
-export default connect(state => state, actionCreators)(SingleUser);
+export default connect(state => state, {
+  ...actionCreators,
+  removeLoggedInUser
+})(SingleUser);

@@ -19,7 +19,7 @@ import {
 } from "Components/styled";
 import { CancelButton } from "./components/styled";
 import validationSchema from "./validationSchema";
-import { userFetchRequested } from "./actionCreators";
+import { userFetchRequested, userUpdateSucceeded } from "./actionCreators";
 
 import { TEditProfileProps, userFetchTypes } from "./types";
 
@@ -28,12 +28,19 @@ function onSubmit(
   values: FormikValues,
   actions: FormikActions<FormikValues>
 ) {
+  const {
+    match: {
+      params: { id }
+    }
+  } = props;
   actions.setSubmitting(true);
+  delete values.serverErrorMessage;
   axios
-    .post(`/api/${props.match.params.id}/edit`, values)
+    .post(`/api/${id}/edit`, values)
     .then(res => {
       actions.setSubmitting(false);
-      console.log(res.data);
+      props.userUpdateSucceeded(res.data);
+      props.history.push(`/${id}`);
     })
     .catch(err => {
       actions.setSubmitting(false);
@@ -135,10 +142,9 @@ const EditProfile: SFC<TEditProfileProps> = props => {
   );
 };
 
-function mapDispatchToProps(
-  dispatch: Dispatch<{ type: userFetchTypes.USER_FETCH_REQUESTED }>
-) {
-  return bindActionCreators({ userFetchRequested }, dispatch);
-}
+const actions = {
+  userFetchRequested,
+  userUpdateSucceeded
+};
 
-export default connect(state => state, mapDispatchToProps)(EditProfile);
+export default connect(state => state, actions)(EditProfile);

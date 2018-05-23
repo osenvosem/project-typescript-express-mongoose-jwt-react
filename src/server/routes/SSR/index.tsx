@@ -63,7 +63,7 @@ const SSRHandler: Handler = (req, res, next) => {
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <meta http-equiv="X-UA-Compatible" content="ie=edge">
-          <title>Typescript boilerplate</title>
+          <title>User accounts</title>
           ${sheet.getStyleTags()}
           <script>window.__INITIAL_STATE__ = ${JSON.stringify(
             store.getState()

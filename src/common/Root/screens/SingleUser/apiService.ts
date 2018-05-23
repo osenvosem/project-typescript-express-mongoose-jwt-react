@@ -20,3 +20,7 @@ export const fetchSingleUser = (id: string) => {
       });
   }
 };
+
+export const removeUser = (id: string) => {
+  return axios.delete(`/api/delete/${id}`);
+};

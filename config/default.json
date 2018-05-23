@@ -1,4 +1,5 @@
 {
+  "dbUrl": "mongodb://localhost/expressjwt",
   "buildPaths": {
     "client": "public",
     "server": "build"

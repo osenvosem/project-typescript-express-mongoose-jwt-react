@@ -6,7 +6,7 @@ import config from "config";
 import mongoose from "mongoose";
 
 import User from "../../models/User";
-import { TUser } from "../../models/User/types";
+import { TUser, TUserDocument } from "../../models/User/types";
 import { TRequestErrorWithStatusCode } from "./types";
 
 const router = Router();
@@ -59,6 +59,33 @@ router.get("/:id", jwtAuth, validateUserIdParam, (req, res, next) => {
 
 router.post("/:id/edit", jwtAuth, validateUserIdParam, (req, res, next) => {
   const { id } = req.params;
+  const body: { [key: string]: string } = {};
+
+  for (const key in req.body) {
+    if (req.body[key]) body[key] = req.body[key];
+  }
+
+  // if the user changes the password, we need to properly save it, otherwise we simply update document fields
+  if (body.password) {
+    User.findById(id)
+      .then(userDoc => {
+        userDoc!.set(body);
+        userDoc!
+          .save()
+          .then(updatedUserDoc => {
+            res.send(User.filterPublicFields(updatedUserDoc));
+          })
+          .catch(next);
+      })
+      .catch(next);
+  } else {
+    User.findByIdAndUpdate(id, body, { new: true })
+      .then(rawUser => {
+        const user = User.filterPublicFields(rawUser!) as TUser;
+        res.json(user);
+      })
+      .catch(next);
+  }
 });
 
 router.post("/registration", (req, res, next) => {
@@ -135,6 +162,11 @@ router.post("/logout", (req, res, next) => {
   res.clearCookie("access_token");
   delete req.user;
   res.status(200).send("Logged out");
+});
+
+router.delete("/delete/:id", jwtAuth, validateUserIdParam, (req, res, next) => {
+  const { id } = req.params;
+  User.findByIdAndRemove(id).catch(next);
 });
 
 export default router;

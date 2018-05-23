@@ -1,5 +1,9 @@
 import { RouteComponentProps } from "react-router-dom";
-import { TUser, TGlobalState } from "../../../types";
+import {
+  TUser,
+  TGlobalState,
+  TRemoveLoggedInUserActionCreator
+} from "../../../types";
 
 export interface TSingleUserProps
   extends TGlobalState,
@@ -7,26 +11,28 @@ export interface TSingleUserProps
   fetchSingleUserRequested: TFetchSingleUserRequestedActionCreator;
   fetchSingleUserSucceeded: TFetchSingleUserSucceededActionCreator;
   fetchSingleUserFailed: TFetchSingleUserFailedActionCreator;
+  removeUser: TRemoveUserActionCreator;
+  removeLoggedInUser: TRemoveLoggedInUserActionCreator;
 }
 
 export interface TOwnProps extends RouteComponentProps<{ id: string }> {}
 
-export enum FetchSingleUserTypes {
+export enum fetchSingleUserTypes {
   FETCH_SINGLE_USER_REQUESTED = "FETCH_SINGLE_USER_REQUESTED",
   FETCH_SINGLE_USER_SUCCEEDED = "FETCH_SINGLE_USER_SUCCEEDED",
   FETCH_SINGLE_USER_FAILED = "FETCH_SINGLE_USER_FAILED"
 }
 
 export interface TFetchSingleUserRequestedAction {
-  type: FetchSingleUserTypes.FETCH_SINGLE_USER_REQUESTED;
+  type: fetchSingleUserTypes.FETCH_SINGLE_USER_REQUESTED;
   id: string;
 }
 export interface TFetchSingleUserSucceededAction {
-  type: FetchSingleUserTypes.FETCH_SINGLE_USER_SUCCEEDED;
+  type: fetchSingleUserTypes.FETCH_SINGLE_USER_SUCCEEDED;
   user: TUser;
 }
 export interface TFetchSingleUserFailedAction {
-  type: FetchSingleUserTypes.FETCH_SINGLE_USER_FAILED;
+  type: fetchSingleUserTypes.FETCH_SINGLE_USER_FAILED;
   error: Error;
 }
 export type TFetchSingleUserActions =
@@ -42,4 +48,21 @@ export interface TFetchSingleUserSucceededActionCreator {
 }
 export interface TFetchSingleUserFailedActionCreator {
   (error: Error): TFetchSingleUserFailedAction;
+}
+
+/**
+ * REMOVE USER
+ */
+
+export enum removeUserTypes {
+  REMOVE_USER = "REMOVE_USER"
+}
+
+export interface TRemoveUserAction {
+  type: removeUserTypes.REMOVE_USER;
+  id: string;
+}
+
+export interface TRemoveUserActionCreator {
+  (id: string): TRemoveUserAction;
 }

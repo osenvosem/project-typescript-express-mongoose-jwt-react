@@ -1,13 +1,11 @@
-import yup from "yup";
+import { object, string } from "yup";
 
-export default yup.object().shape({
-  username: yup
-    .string()
+export default object().shape({
+  username: string()
     .min(3)
     .max(30)
     .required(),
-  password: yup
-    .string()
+  password: string()
     .min(6)
     .max(30)
     .required()

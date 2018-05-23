@@ -73,6 +73,7 @@ export const EditButton = BaseButton.extend`
 
 export const DeleteButton = BaseButton.withComponent("button").extend`
   background-color: ${({ theme }) => theme.colors.secondary};
+  cursor: pointer;
 `;
 
 export const BackButton = styled(Link)`

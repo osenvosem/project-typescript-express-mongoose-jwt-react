@@ -3,10 +3,10 @@ const config = require("config");
 
 const paths = config.get("buildPaths");
 
-rimraf(`${paths.client}/*`, err => {
+rimraf(`${paths.client}/*.js`, err => {
   if (err) console.error(err);
 });
 
-rimraf(`${paths.server}/*`, err => {
+rimraf(`${paths.server}/*.js`, err => {
   if (err) console.error(err);
 });

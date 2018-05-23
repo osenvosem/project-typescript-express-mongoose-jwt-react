@@ -6,7 +6,16 @@ export interface TEditProfileProps
   extends RouteComponentProps<{ id: string }>,
     TGlobalState {
   userFetchRequested: TUserFetchRequestedActionCreator;
+  userUpdateSucceeded: TUserUpdateSucceededActionCreator;
 }
+
+export interface TFetchUserApiService {
+  (id: string): Promise<TUser | null> | void;
+}
+
+/**
+ * USER FETCH
+ */
 
 export enum userFetchTypes {
   USER_FETCH_REQUESTED = "USER_FETCH_REQUESTED",
@@ -41,6 +50,19 @@ export interface TUserFetchFailedActionCreator {
   (error: Error): TUserFetchFailedAction;
 }
 
-export interface TFetchUserApiService {
-  (id: string): Promise<TUser | null> | void;
+/**
+ * UPDATE USER
+ */
+
+export enum userUpdateTypes {
+  USER_UPDATE_SUCCEEDED = "USER_UPDATE_SUCCEEDED"
+}
+
+export interface TUserUpdateSucceededAction {
+  type: userUpdateTypes.USER_UPDATE_SUCCEEDED;
+  user: TUser;
+}
+
+export interface TUserUpdateSucceededActionCreator {
+  (user: TUser): TUserUpdateSucceededAction;
 }

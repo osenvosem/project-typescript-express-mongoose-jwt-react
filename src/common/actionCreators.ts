@@ -1,18 +1,18 @@
 import {
   TAddLoggedInUserActionCreator,
   TRemoveLoggedInUserActionCreator,
-  LoggedInUserActionTypes
+  loggedInUserTypes
 } from "./types";
 
 export const addLoggedInUser: TAddLoggedInUserActionCreator = user => {
   return {
-    type: LoggedInUserActionTypes.ADD_LOGGED_IN_USER,
-    payload: user
+    type: loggedInUserTypes.ADD_LOGGED_IN_USER,
+    user
   };
 };
 
 export const removeLoggedInUser: TRemoveLoggedInUserActionCreator = () => {
   return {
-    type: LoggedInUserActionTypes.REMOVE_LOGGED_IN_USER
+    type: loggedInUserTypes.REMOVE_LOGGED_IN_USER
   };
 };
