@@ -10,3 +10,7 @@ rimraf(`${paths.client}/*.js`, err => {
 rimraf(`${paths.server}/*.js`, err => {
   if (err) console.error(err);
 });
+
+rimraf(`${paths.server}/*.map`, err => {
+  if (err) console.error(err);
+});
