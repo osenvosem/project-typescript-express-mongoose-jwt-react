@@ -68,6 +68,7 @@ const EditProfile: SFC<TEditProfileProps> = props => {
           <Redirect to="/login" />
         ) : (
           <>
+            <Title>Edit profile</Title>
             {errors.serverErrorMessage && (
               <ServerErrorMessage>
                 Server error: {errors.serverErrorMessage}
