@@ -9,7 +9,7 @@
   "scripts": {
     "start": "NODE_ENV=production node build/server.bundle.js",
     "start:dev": "NODE_ENV=development node scripts/start.js",
-    "build": "NODE_ENV=production node scripts/build.js",
+    "postinstall": "NODE_ENV=production node scripts/build.js",
     "clean": "node scripts/clean.js"
   },
   "devDependencies": {
