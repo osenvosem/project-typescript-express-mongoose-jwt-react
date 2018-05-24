@@ -1,5 +1,7 @@
 ## Universal React application with JWT authentication written using Typescript
 
+#### [Demo](https://pj-ts-react-uni-jwt.herokuapp.com/) (You may need to wait some time while the server waking up)
+
 ### What's inside
 
 * Completely typed React/Redux application using TypeScript;
