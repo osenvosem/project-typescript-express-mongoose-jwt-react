@@ -62,4 +62,3 @@ typings/
 
 build/
 public/
-src/server/routes/SSR/react-loadable.json
